@@ -1,0 +1,24 @@
+// Ex1a
+var NUMBER_OF_PEOPLE = 23;
+
+var collidingBirthdays = function(i) {
+  if (i==0) { return false; }
+  var day = sample(Uniform({a:0,b:364}));
+  if (day < NUMBER_OF_PEOPLE-i) {
+    return true;
+  } else {
+    return collidingBirthdays(i-1);
+  }
+}
+
+var birthdays = function() {
+  var x = collidingBirthdays(NUMBER_OF_PEOPLE);
+  return x;
+  
+}
+
+var dist = Infer(
+  {method: 'rejection', samples: 2000},
+  birthdays);
+
+viz.auto(dist);
