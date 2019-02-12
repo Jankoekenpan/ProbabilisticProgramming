@@ -1,0 +1,53 @@
+/* 3a
+ */
+var performTest = function(type) {
+  //Apparently I cannot use 'switch' in WebPPL. stupid program.
+  if (type == 'normal') {
+    return flip(0.66) ? 'true' : 'false'
+  } else if (type == 'rigorous') {
+    return flip(0.33) ? 'true' : 'false'
+  } else {
+    return 'unknown'
+  }
+} 
+
+var testProduct = function(id) {
+  if (id == 0) {
+    var outcome = performTest(flip(0.5) ? 'normal' : 'rigorous')
+    return {outcome: outcome,
+            totalFalses: outcome == 'false' ? 1 : 0,
+            totalTrues: outcome == 'true' ? 1 : 0}
+  } else {
+    var previousTest = testProduct(id - 1)
+    if (previousTest.outcome == 'true' || previousTest.outcome == 'false') {
+      var newOutcome = performTest(previousTest.outcome == 'true' ? 'rigorous' : 'normal')
+      var thisTest = {outcome: newOutcome,
+              totalFalses: previousTest.totalFalses + (newOutcome == 'false' ? 1 : 0),
+              totalTrues: previousTest.totalTrues + (newOutcome == 'true' ? 1 : 0)}
+
+      condition(thisTest.totalTrues < 7)
+      condition(thisTest.totalFalses > 0)
+      
+      return thisTest;
+    } else {
+      return previousTest //previous test outcome was not 'false' or 'true'. should not occur.
+    }
+  }
+}
+
+var products = function() {
+  return testProduct(10).outcome
+}
+
+var dist = Infer(
+  {method: 'enumerate', maxExecutions: 10000},
+  products);
+
+viz.auto(dist);
+
+/* 3b
+ * 
+ * Changed the testProduct function to return an object {outcome, totalFalses, totalTrues}
+ * so that we can condition on the total number of occurences of true/false.
+ * I'm guessing there's a prettier way to do this, but this solution works for now.
+ */
