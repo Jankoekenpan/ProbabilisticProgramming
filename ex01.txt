@@ -1,3 +1,77 @@
+// Ex1a
+var NUMBER_OF_PEOPLE = 23;
+
+var collidingBirthdays = function(i) {
+  if (i==0) { return false; }
+  var day = sample(Uniform({a:0,b:364}));
+  if (day < NUMBER_OF_PEOPLE-i) {
+    return true;
+  } else {
+    return collidingBirthdays(i-1);
+  }
+}
+
+var birthdays = function() {
+  var x = collidingBirthdays(NUMBER_OF_PEOPLE);
+  return x;
+  
+}
+
+var dist = Infer(
+  {method: 'rejection', samples: 2000},
+  birthdays);
+
+viz.auto(dist);
+
+
+
+
+
+// Ex2
+var pickNumber = function() {
+  return sample(RandomInteger({n:10}))
+}
+
+var isWinning = function(a, b) {
+  return a + b == 13
+}
+
+var secondWinning = function(a, b) {
+  return a + b > 8
+}
+
+var pickSecondNumber = function(firstNumber) {
+  if (firstNumber > 8) {
+    //no chance of guessing the correct number. just pick randomly.
+    return pickNumber()
+  } else {
+    var lowerBound = 9 - firstNumber
+    return sample(Uniform({a: lowerBound, b: 9}))
+  }
+}
+
+var pickNumbers2 = function(howManyTimes) {
+  if (howManyTimes == 0) return []
+  else {
+    var x = pickNumber()
+    var y = pickSecondNumber(x)
+    
+    var rec = pickNumbers2(howManyTimes-1)
+    
+    if (isWinning(x, y)) {
+      return rec.concat([x])
+    } else {
+      return rec
+    }
+  }
+}
+
+viz.auto(pickNumbers2(10000))
+//should produce a bar-chart, whethere the number with most successes has the highest bar.
+//this doesn't seem to work correctly.. :/
+
+
+
 /* 3a
  */
 var performTest = function(type) {
