@@ -1,0 +1,28 @@
+#1a
+calls = 0
+minute = 0
+
+weekday = true [5/7] false
+
+if (weekday) {
+    while (minute < 60) {
+        {calls++} [1/6] {skip}
+        minute++
+    }
+} else {
+    while (minute < 60) {
+        {calls++} [1/20] {skip}
+        minute++
+    }
+}
+
+observe(calls == 4)
+
+
+#1b
+
+f = (5/7) * (expectation van de body)   + (2/7) * (expectation van de body)
+f = (5/7) * (4*(1/6))  ????             + (2/7) * (4*(1/20))  ????
+
+#1c
+cwp(P, f) = 
